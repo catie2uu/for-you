@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player 1 // Break Hub</title>
+  <style>
+    :root {
+      --bg: #11131c;
+      --card: #1a1d2c;
+      --card-inner: #131520;
+      --border: #2c314a;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #38bdf8;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --pink: #f472b6;
+      --warm: #fb923c;
+      --spice: #e11d48;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 20px 14px 50px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* HEADER & XP */
+    header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--pink);
+      background: rgba(244, 114, 182, 0.12);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    header h1 {
+      font-size: 1.45rem;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .xp-box {
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .xp-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: 5px;
+    }
+
+    .xp-track {
+      width: 100%;
+      height: 9px;
+      background: var(--card-inner);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .xp-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--warm), var(--pink), var(--primary));
+      transition: width 0.3s ease;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .card-warm {
+      border-color: rgba(251, 146, 60, 0.35);
+      background: linear-gradient(180deg, #1f1b24 0%, #1a1d2c 100%);
+    }
+
+    .card-spice {
+      border-color: rgba(225, 29, 72, 0.45);
+      background: linear-gradient(180deg, #1f1926 0%, #1a1d2c 100%);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-header h2 {
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      background: var(--card-inner);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .tag-warm {
+      color: #fed7aa;
+      border-color: rgba(251, 146, 60, 0.4);
+      background: rgba(251, 146, 60, 0.14);
+    }
+
+    .tag-spice {
+      color: #fda4af;
+      border-color: rgba(225, 29, 72, 0.4);
+      background: rgba(225, 29, 72, 0.15);
+    }
+
+    /* QUOTES */
+    .quote-display {
+      background: var(--card-inner);
+      border-left: 3px solid var(--pink);
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 0.96rem;
+      line-height: 1.5;
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    /* BUTTONS */
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .btn-ghost {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      background: #23273a;
+      border-color: var(--accent);
+    }
+
+    .btn-warm {
+      background: rgba(251, 146, 60, 0.12);
+      border: 1px solid rgba(251, 146, 60, 0.35);
+      color: #ffedd5;
+    }
+
+    .btn-warm:hover {
+      background: rgba(251, 146, 60, 0.22);
+      border-color: var(--warm);
+    }
+
+    .btn-intimate {
+      background: rgba(244, 114, 182, 0.1);
+      border: 1px solid rgba(244, 114, 182, 0.35);
+      color: #fce7f3;
+    }
+
+    .btn-intimate:hover {
+      background: rgba(244, 114, 182, 0.2);
+      border-color: var(--pink);
+    }
+
+    .btn-spice {
+      background: rgba(225, 29, 72, 0.14);
+      border: 1px solid rgba(225, 29, 72, 0.45);
+      color: #ffe4e6;
+    }
+
+    .btn-spice:hover {
+      background: rgba(225, 29, 72, 0.25);
+      border-color: var(--spice);
+    }
+
+    /* ALARMS & TIMERS */
+    .timer-display {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--card-inner);
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .timer-status {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .alarm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .alarm-grid button {
+      font-size: 0.8rem;
+      padding: 10px 6px;
+    }
+
+    .custom-alarm-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="number"] {
+      width: 90px;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    /* QUESTS */
+    .quest-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 9px;
+      cursor: pointer;
+    }
+
+    .quest-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #12141d;
+      flex-shrink: 0;
+    }
+
+    .quest-item.done {
+      opacity: 0.65;
+      border-color: rgba(74, 222, 128, 0.4);
+    }
+
+    .quest-item.done .check {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .quest-item.done .q-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .xp-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--amber);
+      flex-shrink: 0;
+    }
+
+    /* INTERACTIVE BUTTONS */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .output-box {
+      margin-top: 12px;
+      padding: 14px;
+      background: var(--card-inner);
+      border: 1px dashed var(--pink);
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .output-warm {
+      border-color: var(--warm);
+      color: #ffedd5;
+    }
+
+    .output-spice {
+      border-color: var(--spice);
+      color: #ffe4e6;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse-active {
+      animation: pulse 0.5s ease;
+    }
+
+    .footer-counter {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="pill">🎮 CO-OP PAUSED // STILL YOUR PLAYER 2</div>
+      <h1>Your Break Base Camp</h1>
+      <p>Quests, timers, warm hugs & a little heat while we take space.</p>
+
+      <div class="xp-box">
+        <div class="xp-labels">
+          <span id="lvlLabel">LEVEL 1 • CHILL PLAYER</span>
+          <span id="xpLabel">0 / 150 XP</span>
+        </div>
+        <div class="xp-track">
+          <div class="xp-fill" id="xpBar"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. QUOTES & NOTES FROM YOU -->
+    <div class="card">
+      <div class="card-header">
+        <h2>💌 Note From Me</h2>
+        <span class="tag">Tap to shuffle</span>
+      </div>
+      <div class="quote-display" id="quoteText">
+        "Taking a break isn't losing progress. It's just saving our game so we can come back stronger and closer."
+      </div>
+      <button class="btn-full" onclick="nextQuote()">Give Me Another Note</button>
+    </div>
+
+    <!-- 2. SWEET WARMTH, HUGGING, HOLDING & KISSING BUTTONS -->
+    <div class="card card-warm">
+      <div class="card-header">
+        <h2>🧸 Sweet Warmth & Affection</h2>
+        <span class="tag tag-warm">Cozy & soft</span>
+      </div>
+      <div class="action-grid">
+        <button class="btn-warm" onclick="triggerWarm('hug')">🫂 Tight Warm Hug</button>
+        <button class="btn-warm" onclick="triggerWarm('hold')">🤝 Hold My Hand</button>
+        <button class="btn-warm" onclick="triggerWarm('kiss')">😘 Sweet Kiss</button>
+        <button class="btn-warm" onclick="triggerWarm('cuddle')">🛋️ Cuddle Up</button>
+      </div>
+      <div class="output-box output-warm" id="warmOutput"></div>
+    </div>
+
+    <!-- 3. SPICY / AFTER HOURS VAULT -->
+    <div class="card card-spice">
+      <div class="card-header">
