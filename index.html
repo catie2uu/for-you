@@ -120,7 +120,7 @@
   </div>
 </div>
 <script>
-const notes = [
+const notes = Array.of(
   "Taking a break isn't losing progress. It's just saving our game so we can come back stronger and closer.",
   "Pause right now and drink a full glass of water. Consider it a mandatory health potion from me.",
   "Even in solo mode, you're still the only person I want on my team.",
@@ -128,7 +128,7 @@ const notes = [
   "Unclench your jaw, drop your shoulders, and take one slow deep breath for me.",
   "Fair warning: all this time apart is making me miss your touch way too much.",
   "Sending you a forehead kiss through the screen right now. Have a good day, okay?"
-];
+);
 const warm = {
   hug: "Imagine me walking right up to you, wrapping both arms tightly around your waist, and burying my face into your chest for a full minute until all your stress melts away.",
   hold: "Picture my fingers sliding right between yours, giving your hand a gentle squeeze so you remember you're never really alone—even when we're taking space.",
@@ -153,7 +153,7 @@ const mood = {
   bore: "SIDE MISSION: Go try a free demo on Steam, learn a random trick on YouTube, or make your favorite snack.",
   chal: "MINI CHALLENGE: Stand up right now, stretch for 60 seconds, tidy 3 items near you, and drink water!"
 };
-const quests = [
+const quests = Array.of(
   "Drink 2 full glasses of water before evening",
   "Play a chill single-player game for 45 minutes",
   "Clean or organize your desk & setup area",
@@ -163,24 +163,37 @@ const quests = [
   "Watch a funny video or gaming lore breakdown",
   "Listen to a song that reminds you of good times",
   "Go to bed at a decent hour tonight"
-];
-let curQ = [], done =, xp = Number(localStorage.getItem("xp")) || 0, hugs = Number(localStorage.getItem("hugs")) || 0, tInt = null, sec = 0;
-function show(id, txt) { const el = document.getElementById(id); el.style.display = "block"; el.innerText = txt; }
+);
+let curQ = Array.of();
+let qDone = Array.of(0, 0, 0);
+let xp = Number(localStorage.getItem("xp")) || 0;
+let hugs = Number(localStorage.getItem("hugs")) || 0;
+let tInt = null;
+let sec = 0;
+
+function show(id, txt) {
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  el.innerText = txt;
+}
 function newNote() {
   const el = document.getElementById("quote");
-  let p = notes[Math.floor(Math.random() * notes.length)];
-  while ('"' + p + '"' === el.innerText) p = notes[Math.floor(Math.random() * notes.length)];
+  let p = notes.at(Math.floor(Math.random() * notes.length));
+  while ('"' + p + '"' === el.innerText) {
+    p = notes.at(Math.floor(Math.random() * notes.length));
+  }
   el.innerText = '"' + p + '"';
 }
 function upXP() {
-  const lv = Math.floor(xp / 150) + 1, rem = xp % 150;
+  const lv = Math.floor(xp / 150) + 1;
+  const rem = xp % 150;
   document.getElementById("lvl").innerText = "LEVEL " + lv + " • CHILL PLAYER";
   document.getElementById("xpTxt").innerText = rem + " / 150 XP";
   document.getElementById("xpBar").style.width = (rem / 150 * 100) + "%";
 }
 function rollQuests() {
   curQ = quests.slice().sort(function() { return 0.5 - Math.random(); }).slice(0, 3);
-  done =;
+  qDone = Array.of(0, 0, 0);
   drawQ();
 }
 function drawQ() {
@@ -188,46 +201,79 @@ function drawQ() {
   box.innerHTML = "";
   curQ.forEach(function(q, i) {
     const d = document.createElement("div");
-    d.className = "q-item" + (done[i] ? " done" : "");
-    d.innerHTML = "<span>" + (done[i] ? "✅ " : "⬜ ") + q + "</span><span class='xp-badge'>+50 XP</span>";
+    d.className = "q-item" + (qDone.at(i) ? " done" : "");
+    d.innerHTML = "<span>" + (qDone.at(i) ? "✅ " : "⬜ ") + q + "</span><span class='xp-badge'>+50 XP</span>";
     d.onclick = function() {
-      done[i] = done[i] ? 0 : 1;
-      xp = done[i] ? xp + 50 : Math.max(0, xp - 50);
+      qDone.splice(i, 1, qDone.at(i) ? 0 : 1);
+      xp = qDone.at(i) ? xp + 50 : Math.max(0, xp - 50);
       localStorage.setItem("xp", xp);
-      upXP(); drawQ();
+      upXP();
+      drawQ();
     };
     box.appendChild(d);
   });
-  document.getElementById("qCount").innerText = (done[0] + done[1] + done[2]) + " / 3 Done";
+  const count = qDone.at(0) + qDone.at(1) + qDone.at(2);
+  document.getElementById("qCount").innerText = count + " / 3 Done";
 }
 function chime() {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     const c = new AudioCtx();
-    [523.25, 659.25, 783.99].forEach(function(f, i) {
-      const o = c.createOscillator(), g = c.createGain();
-      o.frequency.value = f; g.gain.setValueAtTime(0.15, c.currentTime + i * 0.15);
+    const freqs = Array.of(523.25, 659.25, 783.99);
+    freqs.forEach(function(f, i) {
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.15, c.currentTime + i * 0.15);
       g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.15 + 0.6);
-      o.connect(g); g.connect(c.destination); o.start(c.currentTime + i * 0.15); o.stop(c.currentTime + i * 0.15 + 0.6);
+      o.connect(g);
+      g.connect(c.destination);
+      o.start(c.currentTime + i * 0.15);
+      o.stop(c.currentTime + i * 0.15 + 0.6);
     });
   } catch (e) {}
 }
 function startT(m, lbl) {
-  clearInterval(tInt); sec = m * 60;
+  clearInterval(tInt);
+  sec = m * 60;
   document.getElementById("aTag").innerText = "Running";
   document.getElementById("tStat").innerText = "Active: " + lbl;
   updT();
   tInt = setInterval(function() {
-    sec--; updT();
-    if (sec <= 0) { clearInterval(tInt); document.getElementById("aTag").innerText = "Done!"; chime(); alert("⏰ " + lbl); }
+    sec--;
+    updT();
+    if (sec <= 0) {
+      clearInterval(tInt);
+      document.getElementById("aTag").innerText = "Done!";
+      chime();
+      alert("⏰ " + lbl);
+    }
   }, 1000);
 }
-function customT() { const m = Number(document.getElementById("cMins").value); if (m > 0) startT(m, m + "m Custom Break ⏰"); }
-function stopT() { clearInterval(tInt); sec = 0; updT(); document.getElementById("aTag").innerText = "Stopped"; }
-function updT() { document.getElementById("tDisp").innerText = String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0"); }
-function hug() { hugs++; localStorage.setItem("hugs", hugs); document.getElementById("sCnt").innerText = "Virtual squeezes sent " + hugs + " times"; chime(); }
-upXP(); rollQuests(); document.getElementById("sCnt").innerText = "Virtual squeezes sent " + hugs + " times";
+function customT() {
+  const m = Number(document.getElementById("cMins").value);
+  if (m > 0) startT(m, m + "m Custom Break ⏰");
+}
+function stopT() {
+  clearInterval(tInt);
+  sec = 0;
+  updT();
+  document.getElementById("aTag").innerText = "Stopped";
+}
+function updT() {
+  const m = String(Math.floor(sec / 60)).padStart(2, "0");
+  const s = String(sec % 60).padStart(2, "0");
+  document.getElementById("tDisp").innerText = m + ":" + s;
+}
+function hug() {
+  hugs++;
+  localStorage.setItem("hugs", hugs);
+  document.getElementById("sCnt").innerText = "Virtual squeezes sent " + hugs + " times";
+  chime();
+}
+upXP();
+rollQuests();
+document.getElementById("sCnt").innerText = "Virtual squeezes sent " + hugs + " times";
 </script>
 </body>
 </html>
-
