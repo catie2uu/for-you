@@ -1,443 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Player 1 // Break Hub</title>
-  <style>
-    :root {
-      --bg: #11131c;
-      --card: #1a1d2c;
-      --card-inner: #131520;
-      --border: #2c314a;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --accent: #38bdf8;
-      --green: #4ade80;
-      --amber: #fbbf24;
-      --pink: #f472b6;
-      --warm: #fb923c;
-      --spice: #e11d48;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      padding: 20px 14px 50px;
-      min-height: 100vh;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* HEADER & XP */
-    header {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-    }
-
-    .pill {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--pink);
-      background: rgba(244, 114, 182, 0.12);
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-    }
-
-    header h1 {
-      font-size: 1.45rem;
-      margin-bottom: 4px;
-    }
-
-    header p {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .xp-box {
-      margin-top: 14px;
-      text-align: left;
-    }
-
-    .xp-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--amber);
-      margin-bottom: 5px;
-    }
-
-    .xp-track {
-      width: 100%;
-      height: 9px;
-      background: var(--card-inner);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .xp-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--warm), var(--pink), var(--primary));
-      transition: width 0.3s ease;
-    }
-
-    /* CARDS */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-    }
-
-    .card-warm {
-      border-color: rgba(251, 146, 60, 0.35);
-      background: linear-gradient(180deg, #1f1b24 0%, #1a1d2c 100%);
-    }
-
-    .card-spice {
-      border-color: rgba(225, 29, 72, 0.45);
-      background: linear-gradient(180deg, #1f1926 0%, #1a1d2c 100%);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .card-header h2 {
-      font-size: 1.05rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tag {
-      font-size: 0.75rem;
-      background: var(--card-inner);
-      color: var(--muted);
-      padding: 4px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .tag-warm {
-      color: #fed7aa;
-      border-color: rgba(251, 146, 60, 0.4);
-      background: rgba(251, 146, 60, 0.14);
-    }
-
-    .tag-spice {
-      color: #fda4af;
-      border-color: rgba(225, 29, 72, 0.4);
-      background: rgba(225, 29, 72, 0.15);
-    }
-
-    /* QUOTES */
-    .quote-display {
-      background: var(--card-inner);
-      border-left: 3px solid var(--pink);
-      padding: 16px;
-      border-radius: 10px;
-      font-size: 0.96rem;
-      line-height: 1.5;
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    /* BUTTONS */
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 11px 14px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-
-    button:hover {
-      background: var(--primary-hover);
-    }
-
-    button:active {
-      transform: scale(0.98);
-    }
-
-    .btn-full {
-      width: 100%;
-    }
-
-    .btn-ghost {
-      background: var(--card-inner);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-ghost:hover {
-      background: #23273a;
-      border-color: var(--accent);
-    }
-
-    .btn-warm {
-      background: rgba(251, 146, 60, 0.12);
-      border: 1px solid rgba(251, 146, 60, 0.35);
-      color: #ffedd5;
-    }
-
-    .btn-warm:hover {
-      background: rgba(251, 146, 60, 0.22);
-      border-color: var(--warm);
-    }
-
-    .btn-intimate {
-      background: rgba(244, 114, 182, 0.1);
-      border: 1px solid rgba(244, 114, 182, 0.35);
-      color: #fce7f3;
-    }
-
-    .btn-intimate:hover {
-      background: rgba(244, 114, 182, 0.2);
-      border-color: var(--pink);
-    }
-
-    .btn-spice {
-      background: rgba(225, 29, 72, 0.14);
-      border: 1px solid rgba(225, 29, 72, 0.45);
-      color: #ffe4e6;
-    }
-
-    .btn-spice:hover {
-      background: rgba(225, 29, 72, 0.25);
-      border-color: var(--spice);
-    }
-
-    /* ALARMS & TIMERS */
-    .timer-display {
-      font-size: 2.2rem;
-      font-weight: 700;
-      text-align: center;
-      font-variant-numeric: tabular-nums;
-      color: var(--accent);
-      background: var(--card-inner);
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
-    }
-
-    .timer-status {
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .alarm-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .alarm-grid button {
-      font-size: 0.8rem;
-      padding: 10px 6px;
-    }
-
-    .custom-alarm-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    input[type="number"] {
-      width: 90px;
-      background: var(--card-inner);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-
-    /* QUESTS */
-    .quest-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      background: var(--card-inner);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 9px;
-      cursor: pointer;
-    }
-
-    .quest-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .check {
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
-      border: 2px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #12141d;
-      flex-shrink: 0;
-    }
-
-    .quest-item.done {
-      opacity: 0.65;
-      border-color: rgba(74, 222, 128, 0.4);
-    }
-
-    .quest-item.done .check {
-      background: var(--green);
-      border-color: var(--green);
-    }
-
-    .quest-item.done .q-text {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-
-    .xp-pill {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--amber);
-      flex-shrink: 0;
-    }
-
-    /* INTERACTIVE BUTTONS */
-    .action-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 9px;
-    }
-
-    .output-box {
-      margin-top: 12px;
-      padding: 14px;
-      background: var(--card-inner);
-      border: 1px dashed var(--pink);
-      border-radius: 10px;
-      font-size: 0.92rem;
-      line-height: 1.5;
-      display: none;
-    }
-
-    .output-warm {
-      border-color: var(--warm);
-      color: #ffedd5;
-    }
-
-    .output-spice {
-      border-color: var(--spice);
-      color: #ffe4e6;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-
-    .pulse-active {
-      animation: pulse 0.5s ease;
-    }
-
-    .footer-counter {
-      text-align: center;
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player 1 // Break Hub</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+  body { background: #11131c; color: #f1f5f9; display: flex; justify-content: center; padding: 20px 14px 50px; }
+  .wrap { width: 100%; max-width: 490px; display: flex; flex-direction: column; gap: 16px; }
+  .card { background: #1a1d2c; border: 1px solid #2c314a; border-radius: 16px; padding: 18px; }
+  .warm { border-color: #fb923c66; }
+  .spice { border-color: #e11d4877; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; color: #f472b6; background: #f472b622; padding: 4px 12px; border-radius: 99px; margin-bottom: 8px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  h2 { font-size: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  p.sub { font-size: 14px; color: #94a3b8; }
+  .tag { font-size: 12px; background: #131520; color: #94a3b8; padding: 3px 9px; border-radius: 8px; border: 1px solid #2c314a; }
+  .xp-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #fbbf24; margin: 14px 0 5px; }
+  .bar { height: 9px; background: #131520; border-radius: 99px; overflow: hidden; }
+  .fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fb923c, #f472b6, #6366f1); transition: width 0.3s; }
+  .box { background: #131520; border-left: 3px solid #f472b6; padding: 15px; border-radius: 10px; font-size: 15px; line-height: 1.5; min-height: 75px; display: flex; align-items: center; margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  button { background: #6366f1; color: #fff; border: none; padding: 11px 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  button:active { transform: scale(0.97); }
+  .full { width: 100%; }
+  .ghost { background: #131520; border: 1px solid #2c314a; }
+  .b-warm { background: #fb923c1f; border: 1px solid #fb923c55; color: #ffedd5; }
+  .b-spice { background: #e11d4822; border: 1px solid #e11d4866; color: #ffe4e6; }
+  .b-pink { background: #f472b61f; border: 1px solid #f472b655; color: #fce7f3; }
+  .out { margin-top: 12px; padding: 13px; background: #131520; border: 1px dashed #f472b6; border-radius: 10px; font-size: 14px; line-height: 1.5; display: none; }
+  .timer { font-size: 34px; font-weight: 700; text-align: center; color: #38bdf8; background: #131520; padding: 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #2c314a; }
+  .row { display: flex; gap: 8px; }
+  input { width: 85px; background: #131520; border: 1px solid #2c314a; color: #fff; padding: 10px; border-radius: 10px; text-align: center; font-size: 14px; }
+  .q-item { display: flex; justify-content: space-between; align-items: center; padding: 11px; background: #131520; border: 1px solid #2c314a; border-radius: 10px; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
+  .q-item.done { opacity: 0.6; text-decoration: line-through; border-color: #4ade8066; }
+  .xp-badge { color: #fbbf24; font-size: 12px; font-weight: 700; }
+</style>
 </head>
 <body>
-
-  <div class="container">
-    <!-- HEADER -->
-    <header>
-      <div class="pill">🎮 CO-OP PAUSED // STILL YOUR PLAYER 2</div>
-      <h1>Your Break Base Camp</h1>
-      <p>Quests, timers, warm hugs & a little heat while we take space.</p>
-
-      <div class="xp-box">
-        <div class="xp-labels">
-          <span id="lvlLabel">LEVEL 1 • CHILL PLAYER</span>
-          <span id="xpLabel">0 / 150 XP</span>
-        </div>
-        <div class="xp-track">
-          <div class="xp-fill" id="xpBar"></div>
-        </div>
-      </div>
-    </header>
-
-    <!-- 1. QUOTES & NOTES FROM YOU -->
-    <div class="card">
-      <div class="card-header">
-        <h2>💌 Note From Me</h2>
-        <span class="tag">Tap to shuffle</span>
-      </div>
-      <div class="quote-display" id="quoteText">
-        "Taking a break isn't losing progress. It's just saving our game so we can come back stronger and closer."
-      </div>
-      <button class="btn-full" onclick="nextQuote()">Give Me Another Note</button>
+<div class="wrap">
+  <div class="card" style="text-align:center;">
+    <div class="pill">🎮 CO-OP PAUSED // STILL YOUR PLAYER 2</div>
+    <h1>Your Break Base Camp</h1>
+    <p class="sub">Quests, timers, warm hugs & a little heat while we take space.</p>
+    <div class="xp-top"><span id="lvl">LEVEL 1 • CHILL PLAYER</span><span id="xpTxt">0 / 150 XP</span></div>
+    <div class="bar"><div class="fill" id="xpBar"></div></div>
+  </div>
+  <div class="card">
+    <h2>💌 Note From Me <span class="tag">Tap to shuffle</span></h2>
+    <div class="box" id="quote">"Taking a break isn't losing progress. It's just saving our game so we can come back stronger and closer."</div>
+    <button type="button" class="full" onclick="newNote()">Give Me Another Note</button>
+  </div>
+  <div class="card warm">
+    <h2>🧸 Sweet Warmth & Affection <span class="tag">Cozy & soft</span></h2>
+    <div class="grid">
+      <button type="button" class="b-warm" onclick="show('wOut', warm.hug)">🫂 Tight Warm Hug</button>
+      <button type="button" class="b-warm" onclick="show('wOut', warm.hold)">🤝 Hold My Hand</button>
+      <button type="button" class="b-warm" onclick="show('wOut', warm.kiss)">😘 Sweet Kiss</button>
+      <button type="button" class="b-warm" onclick="show('wOut', warm.cuddle)">🛋️ Cuddle Up</button>
     </div>
-
-    <!-- 2. SWEET WARMTH, HUGGING, HOLDING & KISSING BUTTONS -->
-    <div class="card card-warm">
-      <div class="card-header">
-        <h2>🧸 Sweet Warmth & Affection</h2>
-        <span class="tag tag-warm">Cozy & soft</span>
-      </div>
-      <div class="action-grid">
-        <button class="btn-warm" onclick="triggerWarm('hug')">🫂 Tight Warm Hug</button>
-        <button class="btn-warm" onclick="triggerWarm('hold')">🤝 Hold My Hand</button>
-        <button class="btn-warm" onclick="triggerWarm('kiss')">😘 Sweet Kiss</button>
-        <button class="btn-warm" onclick="triggerWarm('cuddle')">🛋️ Cuddle Up</button>
-      </div>
-      <div class="output-box output-warm" id="warmOutput"></div>
+    <div class="out" id="wOut" style="border-color:#fb923c; color:#ffedd5;"></div>
+  </div>
+  <div class="card spice">
+    <h2>🌶️ After Hours // Spicy Vault <span class="tag">18+ Tease</span></h2>
+    <div class="grid">
+      <button type="button" class="b-spice" onclick="show('sOut', spice.crave)">🔥 What I'm Craving</button>
+      <button type="button" class="b-spice" onclick="show('sOut', spice.back)">💋 When We're Back</button>
+      <button type="button" class="b-spice" onclick="show('sOut', spice.late)">😈 Late Night Thought</button>
+      <button type="button" class="b-spice" onclick="show('sOut', spice.dare)">🎲 Spicy Mini-Dare</button>
     </div>
-
-    <!-- 3. SPICY / AFTER HOURS VAULT -->
-    <div class="card card-spice">
-      <div class="card-header">
+    <div class="out" id="sOut" style="border-color:#e11d48; color:#ffe4e6;"></div>
+  </div>
+  <div class="card">
+    <h2>🕯️ When You Want to Feel Close <span class="tag">Heart to heart</span></h2>
+    <div class="grid">
+      <button type="button" class="b-pink" onclick="show('iOut', closeMsg.miss)">🤍 Miss My Presence</button>
+      <button type="button" class="b-pink" onclick="show('iOut', closeMsg.sleep)">🌙 Can't Sleep</button>
+      <button type="button" class="b-pink" onclick="show('iOut', closeMsg.voice)">🎧 Imagine My Voice</button>
+      <button type="button" class="b-pink" onclick="show('iOut', closeMsg.calm)">❤️ Reassurance</button>
+    </div>
+    <div class="out" id="iOut"></div>
+  </div>
+  <div class="card">
+    <h2>⚔️ Daily Side Quests <span class="tag" id="qCount">0 / 3 Done</span></h2>
+    <div id="qList"></div>
+    <button type="button" class="ghost full" style="margin-top:6px;" onclick="rollQuests()">🎲 Reroll Quest Board</button>
+  </div>
+  <div class="card">
+    <h2>⏰ Break & Game Alarms <span class="tag" id="aTag">Ready</span></h2>
+    <div class="timer" id="tDisp">00:00</div>
+    <p class="sub" id="tStat" style="text-align:center; margin-bottom:12px;">Pick a reminder timer while gaming or chilling</p>
+    <div class="grid3">
+      <button type="button" class="ghost" onclick="startT(15, 'Stretch & Eyes Break 👀')">15m Stretch</button>
+      <button type="button" class="ghost" onclick="startT(30, 'Drink Water Check 💧')">30m Hydrate</button>
+      <button type="button" class="ghost" onclick="startT(60, '1-Hour Game Check 🎮')">60m Match Cap</button>
+    </div>
+    <div class="row">
+      <input type="number" id="cMins" min="1" max="180" placeholder="Mins">
+      <button type="button" style="flex:1;" onclick="customT()">Start Custom Alarm</button>
+      <button type="button" class="ghost" onclick="stopT()">Stop</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🎛️ Quick Mood & Distraction Fix <span class="tag">Click anytime</span></h2>
+    <div class="grid">
+      <button type="button" class="ghost" onclick="show('mOut', mood.tilt)">🔥 Tilted / Stressed</button>
+      <button type="button" class="ghost" onclick="show('mOut', mood.over)">🌀 Overthinking</button>
+      <button type="button" class="ghost" onclick="show('mOut', mood.bore)">🥱 Bored / Idle</button>
+      <button type="button" class="ghost" onclick="show('mOut', mood.chal)">🎯 Mini Challenge</button>
+    </div>
+    <div class="out" id="mOut" style="border-color:#38bdf8;"></div>
+  </div>
+  <div class="card" style="text-align:center;">
+    <h2 style="justify-content:center;">💓 Virtual Squeeze & Save Point</h2>
+    <p class="sub" style="margin-bottom:12px;">Tap whenever you want to feel my warmth without breaking space.</p>
+    <button type="button" class="full" style="background:linear-gradient(135deg,#fb923c,#e11d48);" onclick="hug()">🤍 Send a Virtual Squeeze</button>
+    <p class="sub" id="sCnt" style="margin-top:10px; font-size:12px;">Virtual squeezes sent 0 times</p>
+  </div>
+</div>
+<script>
+const notes = [
+  "Taking a break isn't losing progress. It's just saving our game so we can come back stronger and closer.",
+  "Pause right now and drink a full glass of water. Consider it a mandatory health potion from me.",
+  "Even in solo mode, you're still the only person I want on my team.",
+  "Don't queue into another match if you're tilted—go take a 10-minute breather and imagine me hugging you.",
+  "Unclench your jaw, drop your shoulders, and take one slow deep breath for me.",
+  "Fair warning: all this time apart is making me miss your touch way too much.",
+  "Sending you a forehead kiss through the screen right now. Have a good day, okay?"
+];
+const warm = {
+  hug: "Imagine me walking right up to you, wrapping both arms tightly around your waist, and burying my face into your chest for a full minute until all your stress melts away.",
+  hold: "Picture my fingers sliding right between yours, giving your hand a gentle squeeze so you remember you're never really alone—even when we're taking space.",
+  kiss: "Imagine me pulling your face down to mine, giving you a soft kiss on your cheek, one on your forehead, and a slow, lingering kiss right on your lips.",
+  cuddle: "Picture us tangled up under a warm blanket with your arm around me and my head on your shoulder, zero talking required—just pure comfort and warmth."
+};
+const spice = {
+  crave: "Honestly? Taking space is good for our heads, but it's terrible for my self-control. I miss the way you look at me when we're alone.",
+  back: "Just know that the second this break is over and we're finally in the same room again, I'm not letting you get away easily.",
+  late: "If you're up late gaming right now, just imagine me walking up behind your chair, wrapping my arms around your shoulders, and whispering in your ear to come to bed.",
+  dare: "SPICY DARE: Write down one thing you want to do with me when we see each other next—and keep it saved in your notes until this break ends."
+};
+const closeMsg = {
+  miss: "Close your eyes for 10 seconds and feel the warmth of us being together. The affection between us hasn't gone anywhere.",
+  sleep: "If you're lying awake thinking about me right now, take a slow breath and pretend I'm right next to you keeping you warm. Get some real sleep tonight.",
+  voice: "Picture me telling you to stop overthinking, take a breath, and relax. You're doing okay, and I'm rooting for you.",
+  calm: "Taking a breather is just us hitting pause so we don't burn out. You matter to me, I care about you deeply, and this space is helping us both reset."
+};
+const mood = {
+  tilt: "DEBUFF CLEARED: Step away from the keyboard for 5 minutes. Splash cold water on your face and switch to a chill game or music.",
+  over: "MENTAL RESET: Name 3 things you can see right now and take 4 slow breaths. You don't need to figure out tomorrow today.",
+  bore: "SIDE MISSION: Go try a free demo on Steam, learn a random trick on YouTube, or make your favorite snack.",
+  chal: "MINI CHALLENGE: Stand up right now, stretch for 60 seconds, tidy 3 items near you, and drink water!"
+};
+const quests = [
+  "Drink 2 full glasses of water before evening",
+  "Play a chill single-player game for 45 minutes",
+  "Clean or organize your desk & setup area",
+  "Step outside for 10 minutes of fresh air (Touch Grass)",
+  "Do 20 pushups or stretch your back & wrists",
+  "Eat a proper meal away from your monitor",
+  "Watch a funny video or gaming lore breakdown",
+  "Listen to a song that reminds you of good times",
+  "Go to bed at a decent hour tonight"
+];
+let curQ = [], done =, xp = Number(localStorage.getItem("xp")) || 0, hugs = Number(localStorage.getItem("hugs")) || 0, tInt = null, sec = 0;
+function show(id, txt) { const el = document.getElementById(id); el.style.display = "block"; el.innerText = txt; }
+function newNote() {
+  const el = document.getElementById("quote");
+  let p = notes[Math.floor(Math.random() * notes.length)];
+  while ('"' + p + '"' === el.innerText) p = notes[Math.floor(Math.random() * notes.length)];
+  el.innerText = '"' + p + '"';
+}
+function upXP() {
+  const lv = Math.floor(xp / 150) + 1, rem = xp % 150;
+  document.getElementById("lvl").innerText = "LEVEL " + lv + " • CHILL PLAYER";
+  document.getElementById("xpTxt").innerText = rem + " / 150 XP";
+  document.getElementById("xpBar").style.width = (rem / 150 * 100) + "%";
+}
+function rollQuests() {
+  curQ = quests.slice().sort(function() { return 0.5 - Math.random(); }).slice(0, 3);
+  done =;
+  drawQ();
+}
+function drawQ() {
+  const box = document.getElementById("qList");
+  box.innerHTML = "";
+  curQ.forEach(function(q, i) {
+    const d = document.createElement("div");
+    d.className = "q-item" + (done[i] ? " done" : "");
+    d.innerHTML = "<span>" + (done[i] ? "✅ " : "⬜ ") + q + "</span><span class='xp-badge'>+50 XP</span>";
+    d.onclick = function() {
+      done[i] = done[i] ? 0 : 1;
+      xp = done[i] ? xp + 50 : Math.max(0, xp - 50);
+      localStorage.setItem("xp", xp);
+      upXP(); drawQ();
+    };
+    box.appendChild(d);
+  });
+  document.getElementById("qCount").innerText = (done[0] + done[1] + done[2]) + " / 3 Done";
+}
+function chime() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const c = new AudioCtx();
+    [523.25, 659.25, 783.99].forEach(function(f, i) {
+      const o = c.createOscillator(), g = c.createGain();
+      o.frequency.value = f; g.gain.setValueAtTime(0.15, c.currentTime + i * 0.15);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.15 + 0.6);
+      o.connect(g); g.connect(c.destination); o.start(c.currentTime + i * 0.15); o.stop(c.currentTime + i * 0.15 + 0.6);
+    });
+  } catch (e) {}
+}
+function startT(m, lbl) {
+  clearInterval(tInt); sec = m * 60;
+  document.getElementById("aTag").innerText = "Running";
+  document.getElementById("tStat").innerText = "Active: " + lbl;
+  updT();
+  tInt = setInterval(function() {
+    sec--; updT();
+    if (sec <= 0) { clearInterval(tInt); document.getElementById("aTag").innerText = "Done!"; chime(); alert("⏰ " + lbl); }
+  }, 1000);
+}
+function customT() { const m = Number(document.getElementById("cMins").value); if (m > 0) startT(m, m + "m Custom Break ⏰"); }
+function stopT() { clearInterval(tInt); sec = 0; updT(); document.getElementById("aTag").innerText = "Stopped"; }
+function updT() { document.getElementById("tDisp").innerText = String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0"); }
+function hug() { hugs++; localStorage.setItem("hugs", hugs); document.getElementById("sCnt").innerText = "Virtual squeezes sent " + hugs + " times"; chime(); }
+upXP(); rollQuests(); document.getElementById("sCnt").innerText = "Virtual squeezes sent " + hugs + " times";
+</script>
+</body>
+</html>
